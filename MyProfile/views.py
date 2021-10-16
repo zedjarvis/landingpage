@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
 from .models import Contact
 # Create your views here.
 
@@ -20,5 +23,20 @@ def index(request):
         contact.phone = phone
         contact.message = subject
         contact.save()
+
+        # Send email to user who contacted the company
+        template = render_to_string('MyProfile/email_template.html',
+                                    {'name': name})
+        email = EmailMessage(
+            'Thank You For Contacting Me.',
+            template,
+            settings.EMAIL_HOST_USER,
+            [email],
+        )
+        email.fail_silently = False
+        try:
+            email.send()
+        except (Exception):
+            pass
 
     return render(request, 'MyProfile/index.html')
