@@ -168,7 +168,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -189,5 +189,7 @@ EMAIL_HOST_PASSWORD = 'Randomthread1'
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
+WHITENOISE_MANIFEST_STRICT = False
+
 # Configure Django App for Heroku.
-django_heroku.settings(config=locals(), staticfiles=False, logging=False)
+django_heroku.settings(config=locals())
