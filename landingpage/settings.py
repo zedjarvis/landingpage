@@ -188,4 +188,4 @@ EMAIL_HOST_PASSWORD = 'Randomthread1'
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Configure Django App for Heroku.
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
