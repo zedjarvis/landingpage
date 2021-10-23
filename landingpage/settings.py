@@ -166,7 +166,7 @@ STATICFILES_DIRS = [
      os.path.join(BASE_DIR, "static"),
 ]
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -188,4 +188,4 @@ EMAIL_HOST_PASSWORD = 'Randomthread1'
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Configure Django App for Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
