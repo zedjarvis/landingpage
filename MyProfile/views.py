@@ -2,11 +2,17 @@ from django.shortcuts import render
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
-from .models import Contact
+from .models import Contact, Post
 # Create your views here.
 
 
 def index(request):
+    posts = Post.objects.all()
+    context = {'posts': posts}
+    return render(request, 'MyProfile/index.html', context)
+
+
+def contact_form_ajax(request):
     if request.method == "POST":
         # instance of model.contacts
         contact = Contact()
@@ -38,5 +44,3 @@ def index(request):
             email.send()
         except (Exception):
             pass
-
-    return render(request, 'MyProfile/index.html')
