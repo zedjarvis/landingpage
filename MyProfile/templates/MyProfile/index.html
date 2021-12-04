@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>cedrouseroll | Landing page</title>
+    <title>cedrouseroll | Profile page</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -22,6 +22,8 @@
     <link href="{% static 'MyProfile/lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
     <link href="{% static 'MyProfile/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
     <link href="{% static 'MyProfile/lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{% static 'MyProfile/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
 
     <!-- Main Stylesheet File -->
     <link href="{% static 'MyProfile/css/style.css' %}" rel="stylesheet">
@@ -72,11 +74,15 @@
         <div class="intro-content display-table">
             <div class="table-cell">
                 <div class="container">
-                    <!--<p class="display-6 color-d">Hello, world!</p>-->
-                    <h1 class="intro-title mb-4">I' am Cedrouseroll Omondi</h1>
-                    <p class="intro-subtitle"><span class="text-slider-items">CEO Roll Technologies,Web Developer,Software Developer,Backend Developer,Pythonista,AI enthusiast</span><strong
+                    <h2 style="color:#0078ff;">Hello...</h2>
+                    <h1 class="intro-title mb-4">I'am Cedrouseroll Omondi</h1>
+                    <p class="intro-subtitle"><span class="text-slider-items">CEO Roll Technologies,Mechanical Engineer,Web Developer,Software Developer,Backend Developer,Pythonista,AI enthusiast</span><strong
                             class="text-slider"></strong></p>
-                    <!-- <p class="pt-3"><a class="btn btn-primary btn js-scroll px-4" href="#about" role="button">Learn More</a></p> -->
+                            <br />
+                            <br />
+                    <div class="linear__icon" style="position: absolute; left: 50%; bottom: 0; margin-left: -16px;">
+                        <p><a href="#about"><i class="fa fa-angle-double-down fa-5x" style="color: #0078ff"></i> </a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,7 +106,7 @@
                                     <div class="col-sm-6 col-md-7">
                                         <div class="about-info">
                                             <p><span class="title-s">Name: </span> <span>Cedrouseroll Omondi</span></p>
-                                            <p><span class="title-s">Profile: </span> <span>full stack developer,
+                                            <p><span class="title-s">Profile: </span> <span>Software Developer, full stack developer,
                                                     Pythonista, AI enthusiast</span></p>
                                             <p><span class="title-s">Email: </span> <span>omondicedo@gmail.com</span>
                                             </p>
@@ -181,7 +187,7 @@
                             Portfolio
                         </h3>
                         <p class="subtitle-a">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Below listed, are some of my recent projects.
                         </p>
                         <div class="line-mf"></div>
                     </div>
@@ -315,7 +321,8 @@
                                         </h5>
                                     </div>
                                     <div>
-                                        <form method="post" role="form" class="contactForm">
+                                        <form method="POST" role="form" class="contactForm" id="contactForm">
+                                            {% csrf_token %}
                                             <div id="sendmessage">Your message has been sent. Thank you!</div>
                                             <div id="errormessage"></div>
                                             <div class="row">
@@ -323,7 +330,7 @@
                                                     <div class="form-group">
                                                         <input type="text" name="name" class="form-control" id="name"
                                                             placeholder="Your Name" data-rule="minlen:4"
-                                                            data-msg="Please enter at least 4 chars" />
+                                                            data-msg="Please enter at least 4 chars" required />
                                                         <div class="validation"></div>
                                                     </div>
                                                 </div>
@@ -331,7 +338,7 @@
                                                     <div class="form-group">
                                                         <input type="email" class="form-control" name="email" id="email"
                                                             placeholder="Your Email" data-rule="email"
-                                                            data-msg="Please enter a valid email" />
+                                                            data-msg="Please enter a valid email" required />
                                                         <div class="validation"></div>
                                                     </div>
                                                 </div>
@@ -339,7 +346,7 @@
                                                     <div class="form-group">
                                                         <input type="text" class="form-control" name="subject"
                                                             id="subject" placeholder="Subject" data-rule="minlen:4"
-                                                            data-msg="Please enter at least 8 chars of subject" />
+                                                            data-msg="Please enter at least 8 chars of subject" required />
                                                         <div class="validation"></div>
                                                     </div>
                                                 </div>
@@ -348,7 +355,7 @@
                                                         <textarea class="form-control" name="message" rows="5"
                                                             data-rule="required"
                                                             data-msg="Please write something for us"
-                                                            placeholder="Message"></textarea>
+                                                            placeholder="Message" required></textarea>
                                                         <div class="validation"></div>
                                                     </div>
                                                 </div>
@@ -358,6 +365,52 @@
                                                 </div>
                                             </div>
                                         </form>
+                                        <script>
+                                            // get contact form and hook a submint event listener
+                                            var contact_form = document.getElementById("contactForm");
+                                            contact_form.addEventListener('submit', submitHandler);
+
+                                            // Create user Ajax function
+                                            function submitHandler(e) {
+                                                e.preventDefault();
+
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: "{% url 'contact' %}",
+                                                    data: $('#contactForm').serialize(),
+                                                    dataType: 'json',
+                                                    success: function () {
+                                                        contact_form.reset()
+
+                                                        // sweet alert modal
+                                                        var Toast = Swal.mixin({
+                                                            toast: true,
+                                                            position: 'top-center',
+                                                            showConfirmButton: false,
+                                                            timer: 5000
+                                                        });
+
+                                                        Toast.fire({
+                                                            icon: 'success',
+                                                            title: "Successfully Sent Message."
+                                                        })
+                                                    },
+                                                    error: function () {
+                                                        var Toast = Swal.mixin({
+                                                            toast: true,
+                                                            position: 'top-center',
+                                                            showConfirmButton: false,
+                                                            timer: 5000
+                                                        });
+
+                                                        Toast.fire({
+                                                            icon: 'error',
+                                                            title: 'Something did not go right, please try again.'
+                                                        })
+                                                    }
+                                                });
+                                            }
+                                        </script>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -404,11 +457,11 @@
                             <p class="copyright">&copy; Copyright <strong>Cedrouseroll</strong>. All Rights Reserved</p>
                             <div class="credits">
                                 <!--
-                  All the links in the footer should remain intact.
-                  You can delete the links only if you purchased the pro version.
-                  Licensing information: https://bootstrapmade.com/license/
-                  Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=DevFolio
-                -->
+                                    All the links in the footer should remain intact.
+                                    You can delete the links only if you purchased the pro version.
+                                    Licensing information: https://bootstrapmade.com/license/
+                                    Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=DevFolio
+                                -->
                                 Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
                             </div>
                         </div>
@@ -434,7 +487,9 @@
     <script src="{% static 'MyProfile/lib/lightbox/js/lightbox.min.js' %}"></script>
     <script src="{% static 'MyProfile/lib/typed/typed.min.js' %}"></script>
     <!-- Contact Form JavaScript File -->
-    <script src="{% static 'MyProfile/contactform/contactform.js' %}"></script>
+    <!--<script src="{% static 'MyProfile/contactform/contactform.js' %}"></script>-->
+    <!-- SweetAlert2 -->
+    <script src="{% static 'MyProfile/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
 
     <!-- Template Main Javascript File -->
     <script src="{% static 'MyProfile/js/main.js' %}"></script>

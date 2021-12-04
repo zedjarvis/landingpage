@@ -1,40 +1,36 @@
 from django.shortcuts import render
+from django.views.generic import View
+from django.http import JsonResponse
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
-from .models import Contact, Post
+from .models import Contact
 # Create your views here.
 
 
 def index(request):
-    posts = Post.objects.all()
-    context = {'posts': posts}
-    return render(request, 'MyProfile/index.html', context)
+    return render(request, 'MyProfile/index.html')
 
 
-def contact_form_ajax(request):
-    if request.method == "POST":
-        # instance of model.contacts
-        contact = Contact()
+# Contact Form ajax call
+class ContactForm(View):
+    def post(self, request):
+        full_name = request.POST.get('name', None)
+        subject = request.POST.get('subject', None)
+        email = request.POST.get('email', None)
+        message = request.POST.get('message', None)
 
-        # Getting values from contact form
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        subject = request.POST.get("subject")
-
-        # committing form values to the database
-        contact.full_name = name
-        contact.email = email
-        contact.phone = phone
-        contact.message = subject
+        contact = Contact(full_name=full_name,
+                          email=email,
+                          subject=subject,
+                          message=message)
         contact.save()
 
         # Send email to user who contacted the company
         template = render_to_string('MyProfile/email_template.html',
-                                    {'name': name})
+                                    {'name': full_name})
         email = EmailMessage(
-            'Thank You For Contacting Me.',
+            'This is an Automated reply, Let me get back to you shortly.',
             template,
             settings.EMAIL_HOST_USER,
             [email],
@@ -42,5 +38,7 @@ def contact_form_ajax(request):
         email.fail_silently = False
         try:
             email.send()
-        except (Exception):
-            pass
+        except (Exception) as e:
+            print(str(e))
+
+        return JsonResponse({'msg': 'successful'})
