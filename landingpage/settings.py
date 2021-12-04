@@ -186,7 +186,7 @@ except (Exception) as e:
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'omondicedo@gmail.com'
-EMAIL_HOST_PASSWORD = 'Randomthread1'
+EMAIL_HOST_PASSWORD = 'Randomthread1*'
 
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
