@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import socket
+from decouple import Csv, config
+import re
 import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,10 +25,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*hjt8#lw@^4p@c*sh*e-)#5bo+-=!+!%ha@8j^#&jdid$r2qqh'
+SECRET_KEY = config("SECRET_KEY", default='django-insecure-5+p&r&c7cv08nbwfwm*vz6-hi=k-k9!+=mv*a1w9iw-724u8!u')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+
+DEBUG = config("DEBUG", default=True, cast=bool)
+
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    ('Cedrouseroll', 'omondicedo@gmail.com'),
+)
+
+MANAGERS = ADMINS
+
+SITE_ID = 1
+
+ANONYMOUS_USER_ID = 0
 
 ALLOWED_HOSTS = ["cedrouseroll.herokuapp.com", "127.0.0.1"]
 
@@ -117,12 +131,22 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cedrouseroll',
         'USER': 'postgres',
-        'PASSWORD': 'cedo1234',
+        'PASSWORD': config("POSTGRES_PASSWORD"),
         'HOST': '127.0.0.1',
         'PORT': '5277'
     }
 }
 
+
+
+# IGNORE 404 FROM SITES REQUESTING CGI, PHP AND WEB CRAWLERS
+IGNORABLE_404_URLS = [
+    re.compile(r'\.(php|cgi)$'),
+    re.compile(r'^/phpmyadmin/'),
+    re.compile(r'^/apple-touch-icon*\.png$'),
+    re.compile(r'^/favicon\.ico$'),
+    re.compile(r'^/robots\.txt$'),
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -175,8 +199,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-# SMTP Configuration
 
+# ============================================
+# SECURITY SETTINGS
+# ============================================
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+
+SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7 * 52  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_REDIRECT = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SESSION_COOKIE_SECURE = True
+SECURE_HSTS_PRELOAD = True
+
+
+# SMTP Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 try:
     EMAIL_HOST = socket.gethostbyname('smtp.gmail.com')
@@ -186,7 +228,7 @@ except (Exception) as e:
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'omondicedo@gmail.com'
-EMAIL_HOST_PASSWORD = 'Randomthread1'
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASS")
 
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
