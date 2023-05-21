@@ -1,2 +1,2 @@
 # landingpage
-my personal profile
+my personal profile build with django
